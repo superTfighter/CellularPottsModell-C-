@@ -8,8 +8,6 @@ DiceSet::DiceSet()
 	this->elements = std::vector<int>();
 
 	this->length = 0;
-
-
 }
 
 bool DiceSet::contains(int uniqueID)
@@ -40,8 +38,12 @@ void DiceSet::remove(int uniqueID)
 		return;
 
 	std::map<int,int>::iterator i = this->indices.find(uniqueID);
+
+	int length = i->first;
+
 	this->indices.erase(i);
 
+	
 	int e = this->elements.back();
 	this->elements.pop_back();
 	this->length--;
@@ -51,10 +53,15 @@ void DiceSet::remove(int uniqueID)
 
 	//TODO:FIX THIS
 
-	/*int a = i->first;
+	this->insert(length);
 
-	this->elements[i->first] = e;
-	this->indices[e] = i->first;*/
+	//PUSH LENGHT INTO THIS 
+	//int a = i->first;
+
+	//this->elements[i->first] = e;
+	//this->indices[e] = i->first;
+
+	
 
 }
 

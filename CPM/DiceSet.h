@@ -2,6 +2,7 @@
 #include <vector>
 #include <map>
 
+//TODO:FIX THIS SHIT
 class DiceSet
 {
 public:

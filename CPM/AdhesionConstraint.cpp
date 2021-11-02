@@ -30,7 +30,7 @@ float AdhesionConstraint::H(int i, int tp)
 //TODO: Solve adhesion parameters...honestly every parameter should be solved
 float AdhesionConstraint::J(int t1, int t2)
 {
-    std::vector<int> J = this->model->parameters.J[t1];
+    std::vector<int> J = this->model->parameters->J[t1];
 
     return J[t2];
 }

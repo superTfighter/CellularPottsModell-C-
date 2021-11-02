@@ -12,12 +12,12 @@ float VolumeConstraint::deltaH(int sourceI, int targetI, int source_type, int ta
 
 float VolumeConstraint::volumeConstraint(float vgain, int cellId)
 {
-    const float l = this->model->parameters.LAMBDA_V[cellId];
+    const float l = this->model->parameters->LAMBDA_V[cellId];
 
     if (cellId == 0 || l == 0)
         return 0;
 
-    const float vdiff = this->model->parameters.V[cellId] - (this->model->getCellVolume(cellId) + vgain);
+    const float vdiff = this->model->parameters->V[cellId] - (this->model->getCellVolume(cellId) + vgain);
 
     return l * vdiff * vdiff;
 }

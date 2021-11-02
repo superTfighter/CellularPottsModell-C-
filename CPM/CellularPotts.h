@@ -10,7 +10,7 @@ class HamiltonianConstraint;
 class CellularPotts
 {
 public:
-	CellularPotts(std::pair<int, int> gridSize, Parameters parameters);
+	CellularPotts(std::pair<int, int> gridSize, Parameters *parameters);
 
 	void addConstraint(HamiltonianConstraint* c);
 	std::vector<HamiltonianConstraint* > getAllContraints();
@@ -28,7 +28,7 @@ public:
 	int getCellVolume(int cellId);
 
 	Grid grid;
-	Parameters parameters;
+	Parameters *parameters;
 	DiceSet borderpixels;
 	float simTime;
 

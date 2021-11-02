@@ -1,6 +1,6 @@
 #include "CellularPotts.h"
 
-CellularPotts::CellularPotts(std::pair<int, int> gridSize, Parameters parameters) : grid(gridSize.first, gridSize.second), parameters(parameters)
+CellularPotts::CellularPotts(std::pair<int, int> gridSize, Parameters *parameters) : grid(gridSize.first, gridSize.second), parameters(parameters)
 {
 	this->cellVolume = std::vector<int>();
 	cellVolume.resize(gridSize.first*gridSize.second*10);
@@ -29,7 +29,7 @@ void CellularPotts::monteCarloStep()
 {
 	float delta_t = 0.0f;
 
-	while (delta_t < 1.0)
+	while (delta_t < 1.0f)
 	{
 		delta_t += 1. / (this->borderpixels.length);
 
@@ -44,7 +44,7 @@ void CellularPotts::monteCarloStep()
 		{
 
 			int r = rand() % ((Ni.size()-1) - 0 + 1) + 0;
-			//RANDOM!!
+
 			src_i = Ni[r];
 
 			if (0 <= src_i)
@@ -163,7 +163,7 @@ bool CellularPotts::docopy(float deltaH)
 	if (deltaH < 0) 
 		return true;
 
-	float e = std::exp(-deltaH / this->parameters.T);
+	float e = std::exp(-deltaH) / this->parameters->T;
 	int random = ((double)rand() / (RAND_MAX)) + 1;
 
 	return random < e;

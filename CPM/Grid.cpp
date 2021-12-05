@@ -5,7 +5,6 @@ Grid::Grid(int xSize, int ySize)
 	this->size = std::pair<int, int>(xSize, ySize);
 	this->_pixelArray = std::vector<int>();
 
-	//TODO: is it a problem???
 	this->x_bits = 1 + floor(log2(size.first - 1));
 	this->y_bits = 1 + floor(log2(size.second - 1));
 
@@ -16,10 +15,15 @@ Grid::Grid(int xSize, int ySize)
 	_pixelArray.resize(pointToIndex(size));
 
 	this->middle = std::pair<int,int>(xSize / 2, ySize / 2);
+
+	neighbours.resize(8);
 }
 
 int Grid::pointToIndex(std::pair<int, int> point)
 {
+	if (point.first == -1 && point.second == -1)
+		return -1;
+
 	return ( point.first << this->y_bits) + point.second;
 }
 
@@ -53,10 +57,13 @@ void Grid::setPixel(std::pair<int, int> point, int value)
 	this->_pixelArray[this->pointToIndex(point)] = value;
 }
 
+/// <summary>
+/// returns Moore-8 neighbors for pixel coordinate at index
+/// </summary>
+/// <param name="index"></param>
+/// <returns></returns>
 std::vector<int> Grid::neighi(int index)
 {
-	std::vector<int> neighbours = std::vector<int>();
-
 	int tl, tm, tr, l, r, bl, bm, br;
 
 	tl = index - 1 - this->x_step;
@@ -68,42 +75,48 @@ std::vector<int> Grid::neighi(int index)
 	bm = index + 1;
 	br = index + 1 + this->x_step;
 
+	//left border
 	if (index < this->size.second) {
 	
 		tl = -1; l = -1; bl = -1;
-	
 	}
 
+	//right border
 	if (index >= this->x_step * (this->size.first - 1)) {
 
 		tr = -1; r = -1; br = -1;
 	}
 
+	//top border
 	if (index % this->x_step == 0) {
 
 		tl = -1; tm = -1; tr = -1;
 	}
 
+
+	//bottom border
 	if((index + 1 - this->size.second) % this->x_step == 0)
 	{
 		bl = -1; bm = -1; br = -1;
 	}
 
-
-	neighbours.push_back(tl);
-	neighbours.push_back(tm);
-	neighbours.push_back(tr);
-	neighbours.push_back(l);
-	neighbours.push_back(r);
-	neighbours.push_back(bl);
-	neighbours.push_back(bm);
-	neighbours.push_back(br);
+	neighbours[0] = tl;
+	neighbours[1] = tm;
+	neighbours[2] = tr;
+	neighbours[3] = l;
+	neighbours[4] = r;
+	neighbours[5] = bl;
+	neighbours[6] = bm;
+	neighbours[7] = br;
 
 	return neighbours;
 }
 
 int Grid::pixti(int src_i)
 {
+	if (src_i == -1)
+		return -1;
+	
 	return this->_pixelArray[src_i];
 }
 

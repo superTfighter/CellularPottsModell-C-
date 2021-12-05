@@ -5,7 +5,21 @@ float HamiltonianConstraint::deltaH(int sourceI, int targetI, int source_type, i
     return 0.0f;
 }
 
-void HamiltonianConstraint::setModel(CellularPotts* modell)
+void HamiltonianConstraint::setModel(CellularPotts* model)
 {
-    this->model = modell;
+    this->model = model;
+
+    afterSetModelMethod();
+}
+
+void HamiltonianConstraint::afterSetModelMethod()
+{
+}
+
+void HamiltonianConstraint::postSetpixListener(int i, int t_old, int t_new)
+{
+}
+
+void HamiltonianConstraint::postMCSListener()
+{
 }

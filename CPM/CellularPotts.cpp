@@ -1,15 +1,16 @@
 #include "CellularPotts.h"
 
-CellularPotts::CellularPotts(std::pair<int, int> gridSize, Parameters *parameters) : grid(gridSize.first, gridSize.second), parameters(parameters)
+//TODOD:OPTIMIZE THESE!!
+CellularPotts::CellularPotts(std::pair<int, int> gridSize, Parameters* parameters) : grid(gridSize.first, gridSize.second), parameters(parameters)
 {
 	this->cellVolume = std::vector<int>();
-	cellVolume.resize(gridSize.first*gridSize.second*10);
+	cellVolume.resize(gridSize.first * gridSize.second * 10);
 
 	this->cellTypeToKind = std::vector<int>();
-	cellTypeToKind.resize(gridSize.first * gridSize.second*10);
+	cellTypeToKind.resize(gridSize.first * gridSize.second * 10);
 
 	this->_neighbours = std::vector<int>();
-	_neighbours.resize(gridSize.first * gridSize.second *10);
+	_neighbours.resize(gridSize.first * gridSize.second * 10);
 
 	this->simTime = 0;
 }
@@ -25,6 +26,7 @@ std::vector<HamiltonianConstraint*> CellularPotts::getAllContraints()
 	return this->contraints;
 }
 
+//TODO:REFACTOR THIS
 void CellularPotts::monteCarloStep()
 {
 	float delta_t = 0.0f;
@@ -40,10 +42,10 @@ void CellularPotts::monteCarloStep()
 
 		int src_i = -1;
 
-		while(!gotNeigbour)
+		while (!gotNeigbour)
 		{
 
-			int r = rand() % ((Ni.size()-1) - 0 + 1) + 0;
+			int r = rand() % ((Ni.size() - 1) - 0 + 1) + 0;
 
 			src_i = Ni[r];
 
@@ -98,6 +100,11 @@ void CellularPotts::setCellKind(int typeID, int kind)
 	}
 }
 
+int CellularPotts::getCellKind(int typeID)
+{
+	return this->cellTypeToKind[typeID];
+}
+
 void CellularPotts::updateBorderNearAri(int index, int old_type, int new_type)
 {
 	if (old_type == new_type)
@@ -105,34 +112,29 @@ void CellularPotts::updateBorderNearAri(int index, int old_type, int new_type)
 
 	std::vector<int> Ni = this->grid.neighi(index);
 
-	//TODO: What is wasborder
 	bool wasborder = this->_neighbours[index] > 0;
 	this->_neighbours[index] = 0;
 
 	for (auto ni : Ni)
 	{
 
-		if (0 < ni) {
-			int nt = this->grid.pixti(ni);
+		int neigh_type = this->grid.pixti(ni);
 
-			if (nt != new_type)
-				this->_neighbours[index]++;
+		if (neigh_type != new_type)
+			this->_neighbours[index]++;
 
-			if (nt == old_type) {
+		if (neigh_type == old_type) {
 
-				if (this->_neighbours[ni]++ == 0)
-					this->borderpixels.insert(ni);
-			}
-
-			if (nt == new_type) {
-
-				if (--this->_neighbours[ni] == 0) {
-					this->borderpixels.remove(ni);
-				}
-			}
-
+			if (this->_neighbours[ni]++ == 0)
+				this->borderpixels.insert(ni);
 		}
 
+		if (neigh_type == new_type) {
+
+			if (--this->_neighbours[ni] == 0) {
+				this->borderpixels.remove(ni);
+			}
+		}
 	}
 
 	if (!wasborder && this->_neighbours[index] > 0)
@@ -143,16 +145,13 @@ void CellularPotts::updateBorderNearAri(int index, int old_type, int new_type)
 
 }
 
-
 float CellularPotts::deltaH(int sourceIndex, int targetIndex, int sourceType, int targetType)
 {
 	float result = 0;
 
 	for (auto& constraint : this->contraints)
 	{
-
 		result += constraint->deltaH(sourceIndex, targetIndex, sourceType, targetType);
-
 	}
 
 	return result;
@@ -160,19 +159,17 @@ float CellularPotts::deltaH(int sourceIndex, int targetIndex, int sourceType, in
 
 bool CellularPotts::docopy(float deltaH)
 {
-	if (deltaH < 0) 
+	if (deltaH < 0)
 		return true;
 
-	float e = std::exp(-deltaH) / this->parameters->T;
-	int random = ((double)rand() / (RAND_MAX)) + 1;
+	int random = (rand() % 2);
 
-	return random < e;
+	return (int)random < (float)std::exp(-deltaH / this->parameters->T);
 }
-
 
 void CellularPotts::setPixelI(int cellId, int sourceType)
 {
-	int type_old = this->grid.pixti(cellId);
+	const int type_old = this->grid.pixti(cellId);
 
 	if (type_old == sourceType)
 		return;
@@ -184,6 +181,9 @@ void CellularPotts::setPixelI(int cellId, int sourceType)
 		if (this->cellVolume[type_old] == 0)
 		{
 			//TODO: Remove cellvolume and tk2 and nr_of_cells
+
+			throw "Not implemented yet!";
+
 		}
 
 
@@ -206,4 +206,33 @@ void CellularPotts::setPixel(std::pair<int, int> point, int sourceType)
 int CellularPotts::getCellVolume(int cellId)
 {
 	return this->cellVolume[cellId];
+}
+
+std::vector<int> CellularPotts::perimeterNeighbours()
+{
+	return _neighbours;
+}
+
+std::vector<std::pair<int, int>> CellularPotts::getBorderPixels()
+{
+	std::vector<std::pair<int, int>> borderPixels;
+
+	borderPixels.resize(this->borderpixels.elements.size());
+
+	for (size_t i = 0; i < this->borderpixels.elements.size(); i++)
+	{
+		const auto e = this->borderpixels.elements[i];
+		const int type = this->grid.pixti(e);
+
+		if (type != 0)
+		{
+			borderPixels[i] = this->grid.indexToPoint(e);
+		}
+		else
+		{
+			borderPixels[i] = std::pair<int, int>(-1, -1);
+		}
+	}
+
+	return borderPixels;
 }

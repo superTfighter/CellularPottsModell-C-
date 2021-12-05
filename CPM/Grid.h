@@ -41,5 +41,7 @@ private:
 	//Von Neumann neighborhood -- only 4 top,bottom,left,right
 	std::vector<int> neighNeumanni(int index);
 
+	std::vector<int> neighbours;
+
 };
 

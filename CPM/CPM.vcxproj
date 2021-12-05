@@ -158,7 +158,8 @@
     <ClCompile Include="HamiltonianConstraint.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Parameters.cpp" />
-    <ClCompile Include="PeremiterConstraint.cpp" />
+    <ClCompile Include="PerimeterConstraint.cpp" />
+    <ClCompile Include="PersistenceConstraint.cpp" />
     <ClCompile Include="SimpleDisplay.cpp" />
     <ClCompile Include="VolumeConstraint.cpp" />
   </ItemGroup>
@@ -171,7 +172,8 @@
     <ClInclude Include="GridManadger.h" />
     <ClInclude Include="HamiltonianConstraint.h" />
     <ClInclude Include="Parameters.h" />
-    <ClInclude Include="PeremiterConstraint.h" />
+    <ClInclude Include="PerimeterConstraint.h" />
+    <ClInclude Include="PersistenceConstraint.h" />
     <ClInclude Include="SimpleDisplay.h" />
     <ClInclude Include="VolumeConstraint.h" />
   </ItemGroup>

@@ -19,13 +19,18 @@ public:
 	int makeNewCellID(int kind);
 
 	void setCellKind(int typeID, int kind);
-	void updateBorderNearAri(int index, int old_type, int new_type);
+	int getCellKind(int typeID);
 
+	//TODO:TEST THIS
+	void updateBorderNearAri(int index, int old_type, int new_type);
 
 	void setPixelI(int cellId, int sourceType);
 	void setPixel(std::pair<int, int> point, int sourceType);
 
 	int getCellVolume(int cellId);
+
+	std::vector<int> perimeterNeighbours();
+	std::vector<std::pair<int, int>> getBorderPixels();
 
 	Grid grid;
 	Parameters *parameters;

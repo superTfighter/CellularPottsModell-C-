@@ -28,11 +28,16 @@ void SimpleDisplay::setRenderImage()
 {
 	int x, y, r, g, b;
 
+	const auto borders = this->_model->getBorderPixels();
+
 	for (size_t i = 0; i < this->_model->grid.size.first; i++)
 	{
 		for (size_t j = 0; j < this->_model->grid.size.second; j++)
 		{
 			int type = this->_model->grid.pixti(this->_model->grid.pointToIndex(std::pair<int, int>(i, j)));
+
+			if (i == 100 && j == 100)
+				int test = 1;
 
 			sf::Color color;
 
@@ -46,10 +51,11 @@ void SimpleDisplay::setRenderImage()
 			}
 			else
 			{
-				r = 255;
-				g = 0;
-				b = 0;
 
+				r = 0;
+				g = 255;
+				b = 0;
+			
 				color = sf::Color(r, g, b);
 			}
 
@@ -60,9 +66,35 @@ void SimpleDisplay::setRenderImage()
 		}
 	}
 
+	//RENDER BORDERS SEPARERTLY
+	for (size_t i = 0; i < borders.size(); i++)
+	{
+		sf::Color color;
+
+		r = 255;
+		g = 0;
+		b = 0;
+
+		color = sf::Color(r, g, b);
+
+		if(borders[i].first != -1 && borders[i].second != -1)
+			renderImage.setPixel(borders[i].first, borders[i].second, color);
+	}
+
 	renderTexture.loadFromImage(renderImage);
 	renderSprite.setTexture(renderTexture);
 
 	renderSprite.setScale(static_cast<float>(_window->getView().getSize().x) / renderSprite.getTexture()->getSize().x, static_cast<float>(_window->getView().getSize().y) / renderSprite.getTexture()->getSize().y);
 
+}
+
+bool SimpleDisplay::checkIfItsBorder(std::vector<std::pair<int, int>> borders, std::pair<int, int> point)
+{
+	for (size_t i = 0; i < borders.size(); i++)
+	{
+		if (borders[i].first != borders[i].first == point.first && borders[i].second == point.second)
+			return true;
+	}
+
+	return false;
 }

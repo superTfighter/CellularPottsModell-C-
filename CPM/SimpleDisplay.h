@@ -31,5 +31,7 @@ private:
 
 	void setRenderImage();
 
+	bool checkIfItsBorder(std::vector<std::pair<int, int>> borders, std::pair<int, int> point);
+
 };
 

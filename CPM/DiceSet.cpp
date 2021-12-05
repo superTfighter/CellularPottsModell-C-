@@ -1,6 +1,5 @@
 #include "DiceSet.h"
-#include <random>
-#include <iostream>
+
 
 DiceSet::DiceSet()
 {
@@ -8,6 +7,8 @@ DiceSet::DiceSet()
 	this->elements = std::vector<int>();
 
 	this->length = 0;
+
+	this->generator = std::mt19937(time(NULL));
 }
 
 bool DiceSet::contains(int uniqueID)
@@ -26,7 +27,7 @@ void DiceSet::insert(int uniqueID)
 	if (this->contains(uniqueID))
 		return;
 
-	this->indices.insert(std::pair<int, int>(length,uniqueID));
+	this->indices.insert(std::pair<int, int>(uniqueID,length));
 	this->elements.push_back(uniqueID);
 	this->length++;
 
@@ -37,39 +38,49 @@ void DiceSet::remove(int uniqueID)
 	if (!this->contains(uniqueID))
 		return;
 
-	std::map<int,int>::iterator i = this->indices.find(uniqueID);
-
-	int length = i->first;
-
-	this->indices.erase(i);
-
+	int i = this->indices[uniqueID]; //THIS IS A LENGHT STORED 
+	int e = this->elements.back(); //THIS IS AN ID
 	
-	int e = this->elements.back();
+	this->indices.erase(uniqueID);
 	this->elements.pop_back();
 	this->length--;
 
 	if (e == uniqueID)
-		return;
+		return;	
 
-	//TODO:FIX THIS
-
-	this->insert(length);
-
-	//PUSH LENGHT INTO THIS 
-	//int a = i->first;
-
-	//this->elements[i->first] = e;
-	//this->indices[e] = i->first;
-
-	
-
+	this->insertCertainValue(e, i);
 }
 
 int DiceSet::sample()
 {
-	//the random device that will seed the generator -- TODO: FIX!!!
-	int index = rand() % ((this->elements.size() - 1 - 0) + 1);
+	std::uniform_real_distribution<double> dis(0, this->elements.size());
+
+	int index = dis(this->generator);
 
 	return elements[index];
+}
+
+void DiceSet::insertCertainValue(int uniqueID, int lenght)
+{
+	if (this->contains(uniqueID))
+	{
+		this->indices[uniqueID] = lenght;
+	}
+	else
+	{
+		this->indices.insert(std::pair<int, int>(uniqueID, lenght));
+	}
+
+	if (lenght < elements.size())
+	{
+		elements[lenght] = uniqueID;
+	}
+	else
+	{
+		elements.resize((int)(lenght + 1));
+		elements[lenght] = uniqueID;
+	}
+	
+	return;
 }
 
